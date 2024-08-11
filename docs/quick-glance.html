@@ -1,0 +1,104 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Glance of Questions</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Home</a>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownQuestions" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Questions
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownQuestions">
+                            <li><a class="dropdown-item" href="#" onclick="viewQuestions()">View</a></li>
+                            <li><a class="dropdown-item" href="#">Add</a></li>
+                            <li><a class="dropdown-item" href="#">Modify</a></li>
+                            <li><a class="dropdown-item" href="#">Delete</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownQuizzes" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Quizzes
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownQuizzes">
+                            <li><a class="dropdown-item" href="#">View</a></li>
+                            <li><a class="dropdown-item" href="#">Add</a></li>
+                            <li><a class="dropdown-item" href="#">Modify</a></li>
+                            <li><a class="dropdown-item" href="#">Delete</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 class="text-center">Quick Glance of Questions</h1>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered" id="question-table">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Question Text</th>
+                    </tr>
+                </thead>
+                <tbody id="question-body">
+                    <!-- Rows will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    viewQuestions();
+});
+
+function viewQuestions() {
+    const tbody = document.getElementById('question-body');
+    tbody.innerHTML = ''; // Clear any existing content
+
+    fetch('http://localhost:8080/question-lists')
+        .then(response => response.json())
+        .then(data => {
+            // Sort questions by ID in ascending order
+            data.sort((a, b) => a.questionId - b.questionId);
+
+            // Display questions in the table
+            data.forEach(question => {
+                const row = document.createElement('tr');
+
+                const idCell = document.createElement('td');
+                idCell.textContent = question.questionId;
+                row.appendChild(idCell);
+
+                const textCell = document.createElement('td');
+                textCell.textContent = question.title;
+                row.appendChild(textCell);
+
+                tbody.appendChild(row);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching questions:', error);
+            const row = document.createElement('tr');
+            const cell = document.createElement('td');
+            cell.setAttribute('colspan', '2');
+            cell.className = 'text-center text-danger';
+            cell.textContent = 'Error loading questions.';
+            row.appendChild(cell);
+            tbody.appendChild(row);
+        });
+}
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

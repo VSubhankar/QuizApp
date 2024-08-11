@@ -1,0 +1,158 @@
+
+body {
+    background-color: #adbbda; /* Light blue background */
+    text-align: center; /* Center align text */
+}
+
+
+.welcome-title {
+    margin-top: 50px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #343a40;
+    animation: fadeInDown 2s ease-in-out;
+}
+
+@keyframes fadeInDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.btn-lg-custom {
+    width: 200px;
+    margin: 20px;
+    font-size: 1.5rem;
+}
+.page-title {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    animation: fadeIn 2s ease-in-out;
+}
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.btn {
+    width: 60%;
+    font-size: 1.5rem;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+
+.btn:hover {
+    transform: scale(1.1);
+    background-color: #846edc; /* Darken the button on hover */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Centering the navbar items */
+/* Ensure the navbar has sufficient height and consistent spacing */
+.navbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80px; /* Adjust as needed */
+    padding: 0;
+    position: relative;
+    background-color: #343a40; /* Dark background for the navbar */
+}
+
+/* Navbar brand (icon) */
+.navbar-brand {
+    position: absolute;
+    left: 20px; /* Adjust to position icon correctly */
+    display: flex;
+    align-items: center;
+    height: 100%;
+    z-index: 1; /* Ensure it stays above other items */
+}
+
+/* Icon inside the navbar brand */
+.navbar-brand img {
+    width: 30px; /* Adjust icon size */
+    height: 30px; /* Adjust icon size */
+    margin-right: 10px; /* Space between icon and text */
+}
+
+/* Center the navbar items */
+.navbar-nav {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    position: relative;
+    justify-content: center; /* Center items horizontally */
+}
+
+/* Ensure navbar items don’t overlap */
+.nav-item {
+    margin: 0 15px; /* Adjust spacing between items */
+    position: relative; /* For proper dropdown alignment */
+}
+
+/* Navbar links and buttons */
+.navbar-nav .nav-item a {
+    padding: 10px 15px; /* Ensure there’s enough space around the text */
+    color: #fff; /* Text color of navbar options */
+    text-decoration: none;
+    display: block; /* Ensure the link covers the entire button area */
+    font-size: 18px; /* Adjust font size to match Home */
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth color transition */
+}
+
+/* Hover effect for navbar links and buttons */
+.navbar-nav .nav-item a:hover {
+    background-color: #5d6166; /* Color on hover */
+    color: #fff; /* Ensure text color remains white */
+}
+
+/* Dropdown menu styling */
+.navbar-nav .dropdown-menu {
+    background-color: #343a40; /* Dark background color of dropdown */
+    border: none; /* Remove border */
+    box-shadow: none; /* Remove shadow */
+    margin-top: 5px; /* Space between dropdown and button */
+    display: none; /* Hide dropdown by default */
+}
+
+/* Dropdown item styling */
+.dropdown-item {
+    color: #fff; /* Text color of dropdown items */
+    padding: 10px 15px; /* Ensure padding inside dropdown items */
+    font-size: 18px; /* Match font size to navbar options */
+}
+
+/* Hover effect for dropdown items */
+.dropdown-item:hover {
+    background-color: #adb5bd; /* Light grey background on hover */
+}
+
+/* Show dropdown on hover */
+.navbar-nav .nav-item:hover .dropdown-menu {
+    display: block; /* Show dropdown menu on hover */
+}
+
+
+/* Button styles */
+.btn-lg-custom {
+    margin: 0 10px; /* Adjust margin for spacing */
+    font-size: 18px; /* Adjust font size */
+}
+
+
+
+

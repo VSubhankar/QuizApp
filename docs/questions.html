@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Application</title>
-    <!-- Bootstrap CSS -->
+    <title>Questions Management</title>
+    
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="./styles.css">
 </head>
@@ -47,21 +47,16 @@
             </div>
         </div>
     </nav>
-
-    <!-- Welcome Title -->
-    <div class="welcome-title">
-        Welcome to Quiz Application
+    
+    <div class="container text-center mt-5">
+        <h1 class="page-title">Manage Questions</h1>
+        <div class="button-group mt-4">
+            <button class="btn btn-primary btn-lg mb-3" onclick="location.href='quick-glance.html'">Quick Glance of Questions</button>
+            <button class="btn btn-primary btn-lg mb-3" onclick="location.href='detailed-view.html'">Detailed View of Questions</button>
+            <button class="btn btn-primary btn-lg mb-3" onclick="location.href='add-question.html'">Add Question</button>
+            <button class="btn btn-primary btn-lg mb-3" onclick="location.href='modify-question.html'">Modify Question</button>
+            <button class="btn btn-primary btn-lg mb-3" onclick="location.href='delete-question.html'">Delete Question</button>
+        </div>
     </div>
-
-    <!-- Buttons -->
-    <div class="button-group">
-        <button class="btn btn-primary btn-lg mb-3" onclick="location.href='questions.html'">Questions</button>
-        <button class="btn btn-primary btn-lg mb-3" onclick="location.href='quizzes.html'">Quizzes</button>
-    </div>
-
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
