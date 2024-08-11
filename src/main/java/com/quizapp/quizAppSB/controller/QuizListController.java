@@ -18,10 +18,10 @@ public class QuizListController {
     private QuizListService quizListService;
 
     // Get all quiz IDs
-    @GetMapping("/ids")
-    public ResponseEntity<List<QuizList>> getAllQuizzes() {
-        List<QuizList> quizzes = quizListService.getAllQuizzes();
-        return ResponseEntity.ok(quizzes);
+    @GetMapping
+    public ResponseEntity<List<QuizList>> listQuizzes() {
+        List<QuizList> questions = quizListService.getAllQuizzes();
+        return ResponseEntity.ok(questions);
     }
 }
 

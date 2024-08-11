@@ -16,7 +16,7 @@ public class QuizController {
 
     // Add a new quiz
     @PostMapping
-    public ResponseEntity<Quiz> addQuiz(@RequestBody Quiz quiz) {
+    public ResponseEntity<Quiz> addQuiz(@RequestBody NewQuiz quiz) {
         Quiz savedQuiz = quizService.addQuiz(quiz);
         return ResponseEntity.ok(savedQuiz);
     }

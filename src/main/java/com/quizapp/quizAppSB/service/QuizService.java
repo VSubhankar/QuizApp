@@ -15,7 +15,25 @@ public class QuizService {
     @Autowired
     private QuizRepository quizRepository;
 
-    public Quiz addQuiz(Quiz quiz) {
+    @Autowired
+    private QuizListRepository quizListRepository;
+
+    public Quiz addQuiz(NewQuiz newQuiz) {
+        int id = Math.toIntExact(quizRepository.count()) + 1;
+        String title = newQuiz.getTitle();
+        List<Question> questions = newQuiz.getQuestions();
+
+        // Save to QuizList
+        QuizList quizList = new QuizList();
+        quizList.setQuizId(id);
+        quizList.setTitle(title);
+        quizListRepository.save(quizList);
+
+        // Create and save Quiz
+        Quiz quiz = new Quiz();
+        quiz.setId(id);
+        quiz.setTitle(title);
+        quiz.setQuestions(questions);
         return quizRepository.save(quiz);
     }
 

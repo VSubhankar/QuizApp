@@ -13,8 +13,24 @@ public class QuestionService {
     @Autowired
     private QuestionRepository questionRepository;
 
-    public Question addQuestion(Question question) {
-        return questionRepository.save(question);
+    @Autowired
+    private QuestionListRepository questionListRepository;
+
+    public Question addQuestion(NewQuestion question) {
+        int id = Math.toIntExact(questionRepository.count())+1;
+        String text = question.getQuestionText();
+        List<String> options = question.getOptions();
+        String answer = question.getCorrectAnswer();
+        QuestionList ql = new QuestionList();
+        ql.setQuestionId(id);
+        ql.setTitle(text);
+        questionListRepository.save(ql);
+        Question q = new Question();
+        q.setQuestionText(text);
+        q.setId(id);
+        q.setOptions(options);
+        q.setCorrectAnswer(answer);
+        return questionRepository.save(q);
     }
 
     public Question modifyQuestion(Integer id, Question question) {

@@ -19,7 +19,7 @@ public class QuestionController {
 
     // Add a new question
     @PostMapping
-    public ResponseEntity<Question> addQuestion(@RequestBody Question question) {
+    public ResponseEntity<Question> addQuestion(@RequestBody NewQuestion question) {
         Question savedQuestion = questionService.addQuestion(question);
         return ResponseEntity.ok(savedQuestion);
     }
