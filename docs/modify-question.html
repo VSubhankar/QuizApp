@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modify Question</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            flex: 1;
+            margin-right: 10px;
+        }
+        .form-group input {
+            flex: 3;
+        }
+        .form-group button {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Modify Question</h1>
+        <form id="fetchQuestionForm" class="mt-4">
+            <div class="mb-3 form-group">
+                <label for="questionId" class="form-label">Enter Question ID:</label>
+                <input type="text" class="form-control" id="questionId" placeholder="Enter question ID" required>
+                <button type="submit" class="btn btn-primary">Fetch Question</button>
+            </div>
+        </form>
+
+        <div id="questionForm" class="mt-4" style="display:none;">
+            <div class="mb-3 form-group">
+                <label for="questionText" class="form-label">Question Text</label>
+                <input type="text" class="form-control" id="questionText" disabled>
+                <button type="button" class="btn btn-warning edit-button">Edit</button>
+            </div>
+            <div class="mb-3 form-group">
+                <label for="optionA" class="form-label">Option A</label>
+                <input type="text" class="form-control" id="optionA" disabled>
+                <button type="button" class="btn btn-warning edit-button">Edit</button>
+            </div>
+            <div class="mb-3 form-group">
+                <label for="optionB" class="form-label">Option B</label>
+                <input type="text" class="form-control" id="optionB" disabled>
+                <button type="button" class="btn btn-warning edit-button">Edit</button>
+            </div>
+            <div class="mb-3 form-group">
+                <label for="optionC" class="form-label">Option C</label>
+                <input type="text" class="form-control" id="optionC" disabled>
+                <button type="button" class="btn btn-warning edit-button">Edit</button>
+            </div>
+            <div class="mb-3 form-group">
+                <label for="optionD" class="form-label">Option D</label>
+                <input type="text" class="form-control" id="optionD" disabled>
+                <button type="button" class="btn btn-warning edit-button">Edit</button>
+            </div>
+            <div class="mb-3 form-group">
+                <label for="correctAnswer" class="form-label">Correct Answer</label>
+                <input type="text" class="form-control" id="correctAnswer" disabled>
+                <button type="button" class="btn btn-warning edit-button">Edit</button>
+            </div>
+            <button type="button" id="saveChangesButton" class="btn btn-success" style="display:none;">Save Changes</button>
+        </div>
+    </div>
+
+    
+<script>
+    document.getElementById('fetchQuestionForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const questionId = document.getElementById('questionId').value;
+
+        fetch(`http://localhost:8080/questions/${questionId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data) {
+                    document.getElementById('questionText').value = data.questionText;
+                    document.getElementById('optionA').value = data.options[0];
+                    document.getElementById('optionB').value = data.options[1];
+                    document.getElementById('optionC').value = data.options[2];
+                    document.getElementById('optionD').value = data.options[3];
+                    document.getElementById('correctAnswer').value = data.correctAnswer;
+
+                    document.getElementById('questionForm').style.display = 'block';
+                } else {
+                    alert('Question not found!');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching question:', error);
+                alert('Failed to fetch question. Please try again.');
+            });
+    });
+
+    document.querySelectorAll('.edit-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const inputField = this.previousElementSibling;
+            inputField.disabled = false;
+            document.getElementById('saveChangesButton').style.display = 'inline-block';
+        });
+    });
+
+    document.getElementById('saveChangesButton').addEventListener('click', function() {
+        const questionId = document.getElementById('questionId').value;
+        const updatedQuestionData = {
+            questionText: document.getElementById('questionText').value,
+            options: [
+                document.getElementById('optionA').value,
+                document.getElementById('optionB').value,
+                document.getElementById('optionC').value,
+                document.getElementById('optionD').value
+            ],
+            correctAnswer: document.getElementById('correctAnswer').value
+        };
+
+        fetch(`http://localhost:8080/questions/${questionId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedQuestionData)
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Question updated successfully!');
+                document.getElementById('questionForm').style.display = 'none';
+                document.getElementById('fetchQuestionForm').reset();
+            } else {
+                alert('Failed to update question.');
+            }
+        })
+        .catch(error => {
+            console.error('Error updating question:', error);
+            alert('Failed to update question. Please try again.');
+        });
+    });
+</script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

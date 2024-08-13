@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Question</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Delete Question</h1>
+        <form id="fetchQuestionForm" class="mt-4">
+            <div class="mb-3 form-group">
+                <label for="questionId" class="form-label">Enter Question ID:</label>
+                <input type="text" class="form-control" id="questionId" placeholder="Enter question ID" required>
+                <button type="submit" class="btn btn-primary">Fetch Question</button>
+            </div>
+        </form>
+
+        <div id="questionPreview" class="mt-4" style="display:none;">
+            <h4>Question Preview</h4>
+            <p><strong>Question:</strong> <span id="questionText"></span></p>
+            <p><strong>Option A:</strong> <span id="optionA"></span></p>
+            <p><strong>Option B:</strong> <span id="optionB"></span></p>
+            <p><strong>Option C:</strong> <span id="optionC"></span></p>
+            <p><strong>Option D:</strong> <span id="optionD"></span></p>
+            <p><strong>Correct Answer:</strong> <span id="correctAnswer"></span></p>
+            <button id="deleteButton" class="btn btn-danger">Delete Question</button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('fetchQuestionForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const questionId = document.getElementById('questionId').value;
+
+            fetch(`http://localhost:8080/questions/${questionId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data) {
+                        document.getElementById('questionText').textContent = data.questionText;
+                        document.getElementById('optionA').textContent = data.options[0];
+                        document.getElementById('optionB').textContent = data.options[1];
+                        document.getElementById('optionC').textContent = data.options[2];
+                        document.getElementById('optionD').textContent = data.options[3];
+                        document.getElementById('correctAnswer').textContent = data.correctAnswer;
+
+                        document.getElementById('questionPreview').style.display = 'block';
+                    } else {
+                        alert('Question not found!');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching question:', error);
+                    alert('Failed to fetch question. Please try again.');
+                });
+        });
+
+        document.getElementById('deleteButton').addEventListener('click', function() {
+            const questionId = document.getElementById('questionId').value;
+            const confirmed = confirm('Are you sure you want to delete this question?');
+
+            if (confirmed) {
+                fetch(`http://localhost:8080/questions/${questionId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Question deleted successfully!');
+                        document.getElementById('questionPreview').style.display = 'none';
+                        document.getElementById('fetchQuestionForm').reset();
+                    } else {
+                        alert('Failed to delete question.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting question:', error);
+                    alert('Failed to delete question. Please try again.');
+                });
+            }
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

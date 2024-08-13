@@ -1,9 +1,12 @@
 package com.quizapp.quizAppSB.controller;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.quizapp.quizAppSB.service.*;
-import com.quizapp.quizAppSB.model.*;
+import com.quizapp.quizAppSB.service.QuizService;
+import com.quizapp.quizAppSB.model.Quiz;
+import com.quizapp.quizAppSB.model.NewQuiz;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -21,10 +24,13 @@ public class QuizController {
         return ResponseEntity.ok(savedQuiz);
     }
 
-    // Modify an existing quiz
+    // Modify an existing quiz by omitting specific questions
     @PutMapping("/{id}")
-    public ResponseEntity<Quiz> modifyQuiz(@PathVariable Integer id, @RequestBody Quiz quiz) {
-        Quiz updatedQuiz = quizService.modifyQuiz(id, quiz);
+    public ResponseEntity<Quiz> modifyQuiz(
+        @PathVariable Integer id, 
+        @RequestBody List<Integer> omitQuestionIds) {
+        
+        Quiz updatedQuiz = quizService.modifyQuiz(id, omitQuestionIds);
         if (updatedQuiz != null) {
             return ResponseEntity.ok(updatedQuiz);
         }
