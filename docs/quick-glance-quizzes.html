@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Application</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #adbbda;
+        }
+        .navbar {
+            margin-bottom: 20px;
+        }
+        .quiz-container, .instructions-container {
+            display: none;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .quiz-container {
+            background-color: #ffffff;
+        }
+        .option {
+            display: block;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            border: 2px solid #007bff;
+        }
+        .option.selected {
+            background-color: #ffffe0;
+        }
+        .option.correct {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+        .option.incorrect {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+        }
+        .btn-lg-custom {
+            margin: 0 10px;
+            font-size: 18px;
+        }
+        .text-center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Quiz Application</a>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="playQuizBtn">Play Quiz</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Quiz List Table -->
+        <div id="quizListContainer">
+            <h2 class="text-center">Select a Quiz</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="quiz-list-body">
+                    <!-- Quiz list items will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Instructions Container -->
+        <div id="instructionsContainer" class="instructions-container">
+            <h2 class="text-center">Instructions</h2>
+            <ul id="instructionsList">
+                <!-- Instructions will be dynamically inserted here -->
+            </ul>
+            <button class="btn btn-primary btn-lg" id="startQuizBtn">Click Here to Start</button>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quizContainer" class="quiz-container">
+            <h2 id="quizTitle" class="text-center"></h2>
+            <p id="questionCount" class="text-center"></p>
+            <div id="questionContainer"></div>
+            <div class="text-center">
+                <button class="btn btn-primary btn-lg" id="saveAnswerBtn">Save Answer</button>
+            </div>
+            <div class="text-center mt-3">
+                <p id="questionStatus"></p>
+                <p>Time Left: <span id="questionTimer">15</span> seconds</p>
+                <p>Total Time: <span id="stopwatch">00:00:00</span></p>
+                <p>Score: <span id="score">0</span></p>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="resultsContainer" class="quiz-container" style="display: none;">
+            <h2 class="text-center">Quiz Results</h2>
+            <div id="resultsSummary" class="text-center mb-4"></div>
+            <div id="resultsDetails"></div>
+        </div>
+    </div>
+
+    <script>
+        let quizList = [];
+        let currentQuiz = null;
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let questionTimer;
+        let totalSeconds = 0;
+        let timerInterval;
+        let timeLeft = 15;
+    
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchQuizzes();
+            document.getElementById('startQuizBtn').addEventListener('click', startQuiz);
+            document.getElementById('saveAnswerBtn').addEventListener('click', () => saveAnswer(false));
+        });
+    
+        function fetchQuizzes() {
+            fetch('http://localhost:8080/quiz-list')
+                .then(response => response.json())
+                .then(data => {
+                    quizList = data;
+                    const tbody = document.getElementById('quiz-list-body');
+                    tbody.innerHTML = '';
+                    data.forEach(quiz => {
+                        const row = document.createElement('tr');
+                        const idCell = document.createElement('td');
+                        idCell.textContent = quiz.quizId;
+                        const actionCell = document.createElement('td');
+                        const button = document.createElement('button');
+                        button.textContent = 'Select';
+                        button.className = 'btn btn-primary btn-lg btn-lg-custom';
+                        button.addEventListener('click', () => selectQuiz(quiz.quizId));
+                        actionCell.appendChild(button);
+                        row.appendChild(idCell);
+                        row.appendChild(actionCell);
+                        tbody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error fetching quizzes:', error));
+        }
+    
+        function selectQuiz(quizId) {
+            fetch(`http://localhost:8080/quizzes/${quizId}`)
+                .then(response => response.json())
+                .then(data => {
+                    currentQuiz = data;
+                    const instructionsList = document.getElementById('instructionsList');
+                    instructionsList.innerHTML = `
+                        <li>This quiz contains ${data.questions.length} questions.</li>
+                        <li>You have 15 seconds to answer each question.</li>
+                        <li>Click "Save Answer" to submit your answer or wait for the timer to run out.</li>
+                        <li>The correct answer will be shown for 5 seconds before moving to the next question.</li>
+                    `;
+                    document.getElementById('instructionsContainer').style.display = 'block';
+                    document.getElementById('quizListContainer').style.display = 'none';
+                })
+                .catch(error => console.error('Error fetching quiz details:', error));
+        }
+    
+        function startQuiz() {
+            document.getElementById('instructionsContainer').style.display = 'none';
+            document.getElementById('quizContainer').style.display = 'block';
+            document.getElementById('quizTitle').textContent = `Quiz: ${currentQuiz.title}`;
+            document.getElementById('questionCount').textContent = `This quiz contains ${currentQuiz.questions.length} questions.`;
+            showQuestion();
+            startTimer();
+        }
+    
+        function showQuestion() {
+            if (currentQuestionIndex >= currentQuiz.questions.length) {
+                endQuiz();
+                return;
+            }
+    
+            const question = currentQuiz.questions[currentQuestionIndex];
+            const questionContainer = document.getElementById('questionContainer');
+            questionContainer.innerHTML = `
+                <h3>Question ${currentQuestionIndex + 1}</h3>
+                <p>${question.questionText}</p>
+                ${question.options.map(option => `
+                    <div class="option" data-question="${currentQuestionIndex}" data-answer="${option}">${option}</div>
+                `).join('')}
+            `;
+    
+            document.getElementById('saveAnswerBtn').style.display = 'inline-block';
+    
+            resetQuestionTimer();
+    
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+        }
+    
+        function resetQuestionTimer() {
+            clearInterval(questionTimer);
+            timeLeft = 15;
+            document.getElementById('questionTimer').textContent = timeLeft;
+            questionTimer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('questionTimer').textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(questionTimer);
+                    saveAnswer(true);
+                }
+            }, 1000);
+        }
+    
+        function saveAnswer(timerExpired) {
+            clearInterval(questionTimer);
+    
+            const selectedOption = document.querySelector('.option.selected');
+            const correctAnswer = currentQuiz.questions[currentQuestionIndex].correctAnswer;
+    
+            document.querySelectorAll('.option').forEach(option => {
+                if (option.dataset.answer === correctAnswer) {
+                    option.classList.add('correct');
+                } else if (option === selectedOption) {
+                    option.classList.add('incorrect');
+                }
+            });
+    
+            if (selectedOption && selectedOption.dataset.answer === correctAnswer && !timerExpired) {
+                score++;
+                document.getElementById('score').textContent = score;
+            }
+    
+            document.getElementById('questionStatus').textContent = `Answered ${currentQuestionIndex + 1}/${currentQuiz.questions.length}`;
+            document.getElementById('saveAnswerBtn').style.display = 'none';
+    
+            pauseTimer();
+    
+            setTimeout(() => {
+                resumeTimer();
+                currentQuestionIndex++;
+                showQuestion();
+            }, 5000);
+        }
+    
+        function startTimer() {
+            totalSeconds = 0;
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                totalSeconds++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+    
+        function updateTimerDisplay() {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            document.getElementById('stopwatch').textContent = 
+                `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+    
+        function pauseTimer() {
+            clearInterval(timerInterval);
+        }
+    
+        function resumeTimer() {
+            timerInterval = setInterval(() => {
+                totalSeconds++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+    
+        function endQuiz() {
+            clearInterval(timerInterval);
+            document.getElementById('quizContainer').style.display = 'none';
+            showResults();
+        }
+    
+        function showResults() {
+            const resultsContainer = document.getElementById('resultsContainer');
+            const resultsSummary = document.getElementById('resultsSummary');
+            const resultsDetails = document.getElementById('resultsDetails');
+            
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            
+            resultsSummary.innerHTML = `
+                <h3>Total Score: ${score} out of ${currentQuiz.questions.length}</h3>
+                <p>Total Time: ${minutes}m ${seconds}s</p>
+            `;
+            
+            let detailsHTML = '';
+            currentQuiz.questions.forEach((question, index) => {
+                const userAnswer = document.querySelector(`.option[data-question="${index}"].selected`)?.dataset.answer || 'Not answered';
+                const isCorrect = userAnswer === question.correctAnswer;
+                
+                detailsHTML += `
+                    <div class="mb-4 p-3 ${isCorrect ? 'bg-success text-white' : 'bg-danger text-white'}">
+                        <h4>Question ${index + 1}</h4>
+                        <p>${question.questionText}</p>
+                        <p>Your Answer: ${userAnswer}</p>
+                        <p>Correct Answer: ${question.correctAnswer}</p>
+                    </div>
+                `;
+            });
+            
+            resultsDetails.innerHTML = detailsHTML;
+            resultsContainer.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

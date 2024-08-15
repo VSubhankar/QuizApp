@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/quiz-lists")
+@RequestMapping("/quiz-list")
 public class QuizListController {
 
     @Autowired

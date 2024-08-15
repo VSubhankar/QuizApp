@@ -28,6 +28,7 @@ body {
 .btn-lg-custom {
     width: 200px;
     margin: 20px;
+    margin: 10px;
     font-size: 1.5rem;
 }
 .page-title {
@@ -44,6 +45,7 @@ body {
 
 .btn {
     width: 60%;
+    margin: 10px;
     font-size: 1.5rem;
     transition: transform 0.3s ease, background-color 0.3s ease;
 }
@@ -147,12 +149,159 @@ body {
 }
 
 
-/* Button styles */
-.btn-lg-custom {
-    margin: 0 10px; /* Adjust margin for spacing */
-    font-size: 18px; /* Adjust font size */
+
+/* Overall page styles */
+body {
+    background-color: #343a40; /* Dark background for the page */
+    color: #f8f9fa; /* Light text color */
+    font-family: Arial, sans-serif;
 }
 
+/* Navbar styles */
+.navbar {
+    background-color: #212529; /* Dark background for the navbar */
+}
 
+.navbar-nav .nav-item .nav-link {
+    color: #f8f9fa; /* Light text color */
+}
 
+.navbar-nav .nav-item .nav-link:hover {
+    color: #adb5bd; /* Light grey on hover */
+}
+
+/* Quiz list and player container */
+#quiz-list {
+    background-color: #495057; /* Dark grey background for quiz list */
+    padding: 20px;
+    border-radius: 8px;
+}
+
+#quiz-player {
+    background-color: #495057; /* Dark grey background for quiz player */
+    padding: 20px;
+    border-radius: 8px;
+}
+
+/* Option button styles */
+.option-btn {
+    margin-bottom: 10px;
+    border-radius: 5px; /* Rounded corners for option buttons */
+    background-color: #6c757d; /* Default dark grey for options */
+    color: #f8f9fa; /* Light text color */
+    border: none; /* Remove default border */
+}
+
+.option-btn.selected {
+    background-color: #e9ecef; /* Light grey for selected options */
+}
+
+.option-btn.correct {
+    background-color: #28a745; /* Green for correct option */
+}
+
+.option-btn.incorrect {
+    background-color: #dc3545; /* Red for incorrect option */
+}
+
+/* Button styles */
+.btn-primary {
+    background-color: #007bff; /* Primary button color */
+    border: none; /* Remove default border */
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+body {
+    background-color: #343a40; /* Dark background for the entire page */
+    color: #ffffff; /* White text for better contrast */
+    font-family: Arial, sans-serif; /* Use a clear, sans-serif font */
+}
+
+.navbar {
+    margin-bottom: 30px; /* Add margin to the bottom of the navbar */
+}
+
+.quiz-container {
+    background-color: #ffffff; /* Light background for the quiz container */
+    color: #212529; /* Dark text for contrast */
+    max-width: 600px;
+    margin: 0 auto;
+    border-radius: 8px;
+    padding: 20px; /* Add padding for better spacing */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for a floating effect */
+}
+
+.table-dark {
+    background-color: #212529;
+    color: #ffffff;
+}
+
+.table-dark th, .table-dark td {
+    vertical-align: middle;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #ffffff; /* White text for buttons */
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: #ffffff; /* White text for buttons */
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+.form-check-input:checked {
+    background-color: #f8f9fa;
+}
+
+.form-check-label.bg-success {
+    background-color: #28a745;
+    color: #ffffff; /* Ensure text is readable on green background */
+}
+
+.form-check-label.bg-danger {
+    background-color: #dc3545;
+    color: #ffffff; /* Ensure text is readable on red background */
+}
+
+#question-text {
+    color: #212529; /* Dark text for question */
+}
+
+#options label {
+    background-color: #f8f9fa; /* Light background for options */
+    color: #212529; /* Dark text for options */
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    display: block;
+    cursor: pointer;
+}
+
+#options input[type="radio"]:checked + label {
+    background-color: #ffc107; /* Yellow background on selection */
+}
+
+#save-btn, #next-btn {
+    margin-top: 20px; /* Add spacing between buttons */
+}
+
+#quiz-progress, #final-score {
+    color: #212529; /* Dark text for progress and score */
+}
 
