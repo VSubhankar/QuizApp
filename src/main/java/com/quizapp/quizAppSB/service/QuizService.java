@@ -55,23 +55,18 @@ public class QuizService {
         return quizRepository.save(quiz);
     }
 
-    // Modify an existing quiz by omitting specific questions
-    public Quiz modifyQuiz(Integer quizId, List<Integer> omitQuestionIds) {
-        Optional<Quiz> optionalQuiz = quizRepository.findById(quizId);
-        if (!optionalQuiz.isPresent()) {
-            throw new RuntimeException("Quiz with ID " + quizId + " not found.");
+    public Quiz replaceQuiz(Integer id, NewQuiz newQuiz) {
+        // Find and delete the existing quiz
+        Optional<Quiz> existingQuiz = quizRepository.findById(id);
+        if (existingQuiz.isPresent()) {
+            quizRepository.delete(existingQuiz.get());
+        } else {
+            throw new RuntimeException("Quiz with ID " + id + " not found.");
         }
-
-        Quiz quiz = optionalQuiz.get();
-
-        List<Question> filteredQuestions = quiz.getQuestions().stream()
-                .filter(question -> !omitQuestionIds.contains(question.getId()))
-                .collect(Collectors.toList());
-
-        quiz.setQuestions(filteredQuestions);
-
-        return quizRepository.save(quiz);
-    }
+    
+        // Add the new quiz with the same ID
+        return addQuiz(newQuiz);
+    }    
 
     // Delete a quiz by ID and also remove it from QuizList
     public void deleteQuiz(Integer id) {

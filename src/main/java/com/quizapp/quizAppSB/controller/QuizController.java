@@ -24,18 +24,17 @@ public class QuizController {
         return ResponseEntity.ok(savedQuiz);
     }
 
-    // Modify an existing quiz by omitting specific questions
+    // Replace an existing quiz with a new one
     @PutMapping("/{id}")
-    public ResponseEntity<Quiz> modifyQuiz(
-        @PathVariable Integer id, 
-        @RequestBody List<Integer> omitQuestionIds) {
-        
-        Quiz updatedQuiz = quizService.modifyQuiz(id, omitQuestionIds);
+    public ResponseEntity<Quiz> replaceQuiz(@PathVariable Integer id, @RequestBody NewQuiz newQuiz) {
+        Quiz updatedQuiz = quizService.replaceQuiz(id, newQuiz);
         if (updatedQuiz != null) {
             return ResponseEntity.ok(updatedQuiz);
         }
         return ResponseEntity.notFound().build();
     }
+
+
 
     // Delete a quiz
     @DeleteMapping("/{id}")
